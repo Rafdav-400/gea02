@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Paciente = () => {
+const Paciente = ({}) => {
   return (
     <>
       <div className='mt-5 bg-white shadow-md px-5 py-10 mx-5 rounded-lg uppercase font-black'>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import Error from './Error'
 
-const Formulario = () => {
+const Formulario = ({setPaciente}) => {
 
   const [propietario, setPropietario] = useState('');
   const [mascota, setMascota] = useState('');
@@ -8,19 +9,42 @@ const Formulario = () => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [info, setInfo] = useState('');
+  const [error, setError] = useState(false)
   
-  const onClick = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault()
-    console.log('Mandar form');
+    //TODO:Validación del formulario
+    if ([propietario,mascota,email,date,time,info].includes('')) {
+      setError(true)
+      return
+    }
+    //TODO:Almacenar los datos antes de que se borren
+    const objetoPaciente = {
+      propietario,
+      mascota,
+      email,
+      date,
+      time,
+      info,
+    }
+    setPaciente([objetoPaciente])
+    setError(false)
+    setPropietario('')
+    setMascota('')
+    setEmail('')
+    setDate('')
+    setTime('')
+    setInfo('')
+  }
+  const onClick = (e) => {
+    onSubmit()
   }
 
   const onChangePropietario = (e) => {
     setPropietario(e.target.value);
-    console.log(propietario);
   } 
   const onChangeNombre = (e) => {
     setMascota(e.target.value);
-    console.log(mascota);
   } 
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -44,8 +68,12 @@ const Formulario = () => {
         Añade Pacientes y {''} 
         <span className='text-indigo-600 font-bold text-lg'>Adminístralos</span>
       </p>
-
-      <form className='bg-white shadow-xl rounded-lg py-10 px-5'>
+    {
+      error && <Error />
+    }
+      <form 
+        onSubmit={onSubmit}
+        className='bg-white shadow-xl rounded-lg py-10 px-5'>
         <div>
             <label 
                 className='block text-gray-700 uppercase'
