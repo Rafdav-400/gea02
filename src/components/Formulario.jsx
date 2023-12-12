@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Error from './Error'
+import { generarId } from '../helpers/generarID';
 
-const Formulario = ({setPaciente}) => {
-
+const Formulario = ({paciente,setPaciente,cliente,setCliente}) => {
+  
   const [propietario, setPropietario] = useState('');
   const [mascota, setMascota] = useState('');
   const [email, setEmail] = useState('');
@@ -11,6 +12,19 @@ const Formulario = ({setPaciente}) => {
   const [info, setInfo] = useState('');
   const [error, setError] = useState(false)
   
+  useEffect(() => {
+    if (Object.keys(cliente).length > 0) {
+      {/*console.log(cliente)*/}
+      setPropietario(cliente.propietario)
+      setMascota(cliente.mascota)
+      setEmail(cliente.email)
+      setDate(cliente.date)
+      setTime(cliente.time)
+      setInfo(cliente.info)
+    }
+  }, [cliente])
+  
+
   const onSubmit = (e) => {
     e.preventDefault()
     //TODO:Validación del formulario
@@ -27,7 +41,21 @@ const Formulario = ({setPaciente}) => {
       time,
       info,
     }
-    setPaciente([objetoPaciente])
+    if (cliente.id) {
+      {/*console.log("Editando")*/}
+      objetoPaciente.id = cliente.id
+      console.log(objetoPaciente)
+      console.log(cliente)
+      const pacienteActualizado = paciente.map(pacState => (
+        pacState.id === cliente.id ? objetoPaciente : pacState
+      ))
+      setPaciente(pacienteActualizado)
+      setCliente({})
+    } else {
+      {/*console.log("Nuevo Registro")*/}
+      objetoPaciente.id = generarId();
+      setPaciente([...paciente, objetoPaciente])
+    }
     setError(false)
     setPropietario('')
     setMascota('')
@@ -35,9 +63,6 @@ const Formulario = ({setPaciente}) => {
     setDate('')
     setTime('')
     setInfo('')
-  }
-  const onClick = (e) => {
-    onSubmit()
   }
 
   const onChangePropietario = (e) => {
@@ -155,13 +180,11 @@ const Formulario = ({setPaciente}) => {
             />
         </div>
         <div>
-            <button
-            onClick={onClick}
-            
-            className='mt-5 bg-indigo-800 text-white p-5 w-full rounded-md text-2xl font-bold uppercase shadow-md' 
-            >
-                Agregar Datos
-            </button>
+            <input 
+              type="submit" 
+              value={cliente.id ? "Editar Datos" : "Agregar Datos"}
+              className='mt-5 bg-indigo-800 text-white p-5 w-full rounded-md text-2xl font-bold uppercase shadow-md' 
+              />
         </div>
       </form>
 
